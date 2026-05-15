@@ -37,6 +37,114 @@ context = {
         story: '’They’re not dolls, they’re babies!’: How the ___ ___ ___ caused a near-riot in the 1980s',
         complete: '’They’re not dolls, they’re babies!’: How the Cabbage Patch Kids caused a near-riot in the 1980s',
         site: 'BBC'
+    },
+    q7: {
+        word: 'Red Square',
+        story: 'Mathias Rust: German teenager who flew to ___ ___',
+        complete: 'Mathias Rust: German teenager who flew to Red Square',
+        site: 'BBC'
+    },
+    q8: {
+        word: 'wolf',
+        story: '"Monster ___" robots in high demand to scare off bears in Japan after record number of attacks',
+        complete: '"Monster wolf" robots in high demand to scare off bears in Japan after record number of attacks',
+        site: 'CBS'
+    },
+    q9: {
+        word: 'Whale',
+        story: 'Scientists Are Crafting Fake ___ Poop and Dumping It in the Ocean',
+        complete: 'Scientists Are Crafting Fake Whale Poop and Dumping It in the Ocean',
+        site: 'Smithsonian magazine'
+    },
+    q10: {
+        word: 'Katy Perry',
+        story: 'Australian designer ___ ___ wins trademark case against popstar ___ ___ in High Court',
+        complete: 'Australian designer Katie Perry wins trademark case against popstar Katy Perry in High Court',
+        site: 'ABC'
+    },
+    q11: {
+        word: 'monkey',
+        story: 'Cops investigating if Missouri foster mom traded a kid for a ___ to boost her exotic animal collection',
+        complete: 'Cops investigating if Missouri foster mom traded a kid for a monkey to boost her exotic animal collection',
+        site: 'Independent'
+    },
+    q12: {
+        word: 'shoes',
+        story: 'Mystery as hundreds of Victorian ___ wash up on beach',
+        complete: 'Mystery as hundreds of Victorian shoes wash up on beach',
+        site: 'BBC'
+    },
+    q13: {
+        word: 'gorilla',
+        story: 'Virginia zoo with no ___s in custody forced to deny rumors of escaped ___',
+        complete: 'Virginia zoo with no gorillas in custody forced to deny rumors of escaped gorilla',
+        site: 'New York Post'
+    },
+    q14: {
+        word: 'fur',
+        story: 'Woman claims she was kicked out of Manhattan bar for wearing real ___',
+        complete: 'Woman claims she was kicked out of Manhattan bar for wearing real fur',
+        site: 'Independent'
+    },
+    q15: {
+        word: 'potatoes',
+        story: 'Eggs are so expensive that some Americans are decorating ___ this Easter',
+        complete: 'Eggs are so expensive that some Americans are decorating potatoes this Easter',
+        site: 'CBC'
+    },
+    q16: {
+        word: 'Pokemon cards',
+        story: 'The yakuza have resorted to stealing ___ ___. Japan is worried about the next generation of gangsters',
+        complete: 'The yakuza have resorted to stealing Pokemon cards. Japan is worried about the next generation of gangsters',
+        site: 'Independent'
+    },
+    q17: {
+        word: 'turtles',
+        story: 'Man faces jail for smuggling ___ worth $1.4 million in socks to Hong Kong',
+        complete: 'Man faces jail for smuggling turtles worth $1.4 million in socks to Hong Kong',
+        site: 'NBC News'
+    },
+    q18: {
+        word: 'parrot',
+        story: 'Man’s late graduation after ___ sparks rent row',
+        complete: 'Man’s late graduation after parrot sparks rent row',
+        site: 'BBC'
+    },
+    q19: {
+        word: 'bear',
+        story: 'Hank the Tank, a 500-pound ___, was blamed for Lake Tahoe break-ins. But DNA evidence tells a different story',
+        complete: 'Hank the Tank, a 500-pound bear, was blamed for Lake Tahoe break-ins. But DNA evidence tells a different story',
+        site: 'CNN US'
+    },
+    q20: {
+        word: 'Doom',
+        story: 'The ___-playing rats are back, and now they’ve learned how to shoot',
+        complete: 'The Doom-playing rats are back, and now they’ve learned how to shoot',
+        site: 'PC Gamer'
+    },
+    q21: {
+        word: 'Baby Shark',
+        story: 'Former Oklahoma jail officers sued over ’___ ___’ torture tactic are placed on probation',
+        complete: 'Former Oklahoma jail officers sued over ’Baby Shark’ torture tactic are placed on probation',
+        site: 'NBC News'
+    },
+    q22: {
+        word: 'shoe',
+        story: 'Fox found with impressive ___ collection in Berlin',
+        complete: 'Fox found with impressive shoe collection in Berlin',
+        site: 'BBC'
+    },
+    q23: {
+        word: 'Headless',
+        story: '___ Body in Topless Bar',
+        complete: 'Headless Body in Topless Bar',
+        site: 'New York Post'
+    },
+    q24: {
+        word: 'literacy',
+        story: 'Missippi’s ___ program shows improvement',
+        complete: 'Missippi’s literacy program shows improvement',
+        site: 'The Associated Press'
     }
 };
 
@@ -72,14 +180,26 @@ function guess() {
 
         if (attempt == actual_pick['word'].toLowerCase()) {
             document.getElementById('story').innerHTML = actual_pick['complete']
+            document.getElementById('response').innerHTML = "You got it right!";
+            document.getElementById('response').style.color = "3E9E5D";
+            document.getElementById('response').style.fontWeight = "bold";
+
             showNextBtn()
         }
         else {
             guesses -= 1
+            document.getElementById('response').innerHTML = "Wrong! Try again.";
+            document.getElementById('response').style.color = "E81C31";
+            document.getElementById('response').style.fontWeight = "bold";
+
             document.getElementById('attempts').innerHTML = guesses + ' guesses left'
+
         }
 
         if (guesses == 0) {
+            document.getElementById('story').innerHTML = actual_pick['complete']
+            document.getElementById('response').innerHTML = "Oops! You ran out of guesses.";
+
             showNextBtn()
         }
     }
@@ -92,12 +212,17 @@ function showNextBtn() {
 function next() {
     if (Object.keys(context).length != 1) {
         document.getElementById('next').style.display = "none";
+        document.getElementById('response').innerHTML = "Guess Below";
+        document.getElementById('response').style.color = "black";
+        document.getElementById('response').style.fontWeight = "normal";
 
         delete context[pick]
 
         pickRandom()
 
         guesses = 3
+
+        document.getElementById('attempts').innerHTML = guesses + ' guesses left'
     }
     else {
         console.log("Completed")

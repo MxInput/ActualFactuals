@@ -11,22 +11,34 @@
 <body>
     <div class="card">
         <h1>Guess the missing word</h1>
-        <p id="story">
 
-        </p>
+        <h3 id="story">
+        </h3>
+
         <p id="site">
-
         </p>
+
+        <br>
+
         <p id="attempts">
-
         </p>
+        <p id="response">
+            Guess Below
+        </p>
+
         <input type="text" maxlength="30" id="input">
 
         <button onclick="guess()">
             SUBMIT
         </button>
+
         <button onclick="next()" id="next">
             NEXT
+        </button>
+
+        <br>
+        <button onclick="location.href='previous.html'">
+            PREVIOUS QUESTIONS
         </button>
     </div>
     <script src="script.js"></script>
