@@ -3,22 +3,30 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>Weather App</title>
+    <title>ActualFactuals</title>
     <link href="style.css" rel="stylesheet" type="text/css" />
 
 </head>
 
 <body>
     <div class="card">
-        <h1>Guess the word</h1>
-        <p id="display">
-            Guess
-        </p>
-        <p id="try">
+        <h1>Guess the missing word</h1>
+        <p id="story">
 
         </p>
+        <p id="site">
+
+        </p>
+        <p id="attempts">
+
+        </p>
+        <input type="text" maxlength="30" id="input">
+
         <button onclick="guess()">
-            Submit
+            SUBMIT
+        </button>
+        <button onclick="next()" id="next">
+            NEXT
         </button>
     </div>
     <script src="script.js"></script>
