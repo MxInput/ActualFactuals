@@ -151,8 +151,22 @@ context = {
 completed = {}
 guesses = 3
 
+guessedAlready = false
+
 document.getElementById('attempts').innerHTML = guesses + ' guesses left'
 
+function showPreviousQuestions() {
+    list = document.getElementById('previousQuestions')
+    list.innerHTML = ''
+
+    if (Object.keys(completed) > 0) {
+        completed.forEach(function (item) {
+            var option = document.createElement('option');
+            option.value = item;
+            list.appendChild(option);
+        });
+    }
+}
 
 function pickRandom() {
     contextLeft = Object.keys(context).length
@@ -167,7 +181,7 @@ function pickRandom() {
 }
 
 function guess() {
-    if (guesses > 0) {
+    if (guesses > 0 && guessedAlready == false) {
         let guessBox = document.getElementById("input")
         if (!guessBox.value) {
             alert("Please enter a guess.")
@@ -178,13 +192,21 @@ function guess() {
 
         guessBox.value = ""
 
-        if (attempt == actual_pick['word'].toLowerCase()) {
+        if (attempt == actual_pick['word'].toLowerCase() && guessedAlready == false) {
+            guessedAlready = true
             document.getElementById('story').innerHTML = actual_pick['complete']
             document.getElementById('response').innerHTML = "You got it right!";
             document.getElementById('response').style.color = "3E9E5D";
             document.getElementById('response').style.fontWeight = "bold";
 
             showNextBtn()
+
+            Object.assign(actual_pick, { "numGuesses": guesses })
+
+            key = Object.keys(completed).length + 1
+            finalkey = "K" + key
+
+            Object.assign(completed, { [finalkey]: actual_pick })
         }
         else {
             guesses -= 1
@@ -197,8 +219,10 @@ function guess() {
         }
 
         if (guesses == 0) {
+            guessedAlready = true
             document.getElementById('story').innerHTML = actual_pick['complete']
             document.getElementById('response').innerHTML = "Oops! You ran out of guesses.";
+
 
             showNextBtn()
         }
@@ -211,6 +235,8 @@ function showNextBtn() {
 
 function next() {
     if (Object.keys(context).length != 1) {
+        guessedAlready = false
+
         document.getElementById('next').style.display = "none";
         document.getElementById('response').innerHTML = "Guess Below";
         document.getElementById('response').style.color = "black";
@@ -225,7 +251,9 @@ function next() {
         document.getElementById('attempts').innerHTML = guesses + ' guesses left'
     }
     else {
-        console.log("Completed")
+        document.getElementById('response').style.color = "black";
+        document.getElementById('response').style.fontWeight = "bold";
+        document.getElementById('response').innerHTML = "You completed all avaliable questions!";
     }
 }
 
