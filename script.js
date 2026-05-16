@@ -1,7 +1,7 @@
 var actual_pick
 var pick
 
-context = {
+var context = {
     q1: {
         word: 'coyote',
         story: 'Male ___ swam 2 miles to Alcatraz Island, twice as far as biologists had expected',
@@ -148,31 +148,18 @@ context = {
     }
 };
 
-completed = {}
-guesses = 3
+var completed = {}
+var guesses = 3
 
-guessedAlready = false
+var guessedAlready = false
 
 document.getElementById('attempts').innerHTML = guesses + ' guesses left'
 
-function showPreviousQuestions() {
-    list = document.getElementById('previousQuestions')
-    list.innerHTML = ''
-
-    if (Object.keys(completed) > 0) {
-        completed.forEach(function (item) {
-            var option = document.createElement('option');
-            option.value = item;
-            list.appendChild(option);
-        });
-    }
-}
-
 function pickRandom() {
-    contextLeft = Object.keys(context).length
-    i = parseInt(Math.floor(Math.random() * contextLeft))
+    let contextLeft = Object.keys(context).length
+    let i = parseInt(Math.floor(Math.random() * contextLeft))
 
-    context_keys = Object.keys(context)
+    let context_keys = Object.keys(context)
     pick = context_keys[i]
     actual_pick = context[pick]
 
@@ -203,8 +190,8 @@ function guess() {
 
             Object.assign(actual_pick, { "numGuesses": guesses })
 
-            key = Object.keys(completed).length + 1
-            finalkey = "K" + key
+            let key = Object.keys(completed).length + 1
+            let finalkey = "K" + key
 
             Object.assign(completed, { [finalkey]: actual_pick })
         }
@@ -223,6 +210,13 @@ function guess() {
             document.getElementById('story').innerHTML = actual_pick['complete']
             document.getElementById('response').innerHTML = "Oops! You ran out of guesses.";
 
+
+            Object.assign(actual_pick, { "numGuesses": guesses })
+
+            let key = Object.keys(completed).length + 1
+            let finalkey = "K" + key
+
+            Object.assign(completed, { [finalkey]: actual_pick })
 
             showNextBtn()
         }
