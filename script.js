@@ -148,17 +148,44 @@ var context = {
     }
 };
 
+var completed = {}
 var guesses = 3
 
 var guessedAlready = false
 
+var totalQuestions = Object.keys(context).length
+
 function begin() {
+    initializeContext()
     start()
-    pickRandom()
+    if (Object.keys(context).length != 0) {
+        pickRandom()
+    }
+    else {
+        let submit = document.getElementById("submit")
+        submit.style.visibility = "hidden"
+    }
+}
+
+function guessedAll() {
+
 }
 
 function start() {
     document.getElementById('attempts').innerHTML = guesses + ' guesses left'
+}
+
+function initializeContext() {
+    let foundContext = JSON.parse(localStorage.getItem("context"))
+    let foundCompleted = JSON.parse(localStorage.getItem("completed"))
+
+    if (typeof foundContext !== 'undefined' && foundContext !== null) {
+        context = foundContext
+    }
+
+    if (typeof foundCompleted !== 'undefined' && foundCompleted !== null) {
+        completed = foundCompleted
+    }
 }
 
 function pickRandom() {
@@ -200,6 +227,14 @@ function guess() {
             let finalkey = "K" + key
 
             Object.assign(completed, { [finalkey]: actual_pick })
+
+            let dictString = JSON.stringify(completed)
+            localStorage.setItem("completed", dictString)
+
+            delete context[pick]
+
+            let questionString = JSON.stringify(context)
+            localStorage.setItem("context", questionString)
         }
         else {
             guesses -= 1
@@ -224,6 +259,14 @@ function guess() {
 
             Object.assign(completed, { [finalkey]: actual_pick })
 
+            let dictString = JSON.stringify(completed)
+            localStorage.setItem("completed", dictString)
+
+            delete context[pick]
+
+            let questionString = JSON.stringify(context)
+            localStorage.setItem("context", questionString)
+
             showNextBtn()
         }
     }
@@ -242,8 +285,6 @@ function next() {
         document.getElementById('response').style.color = "black";
         document.getElementById('response').style.fontWeight = "normal";
 
-        delete context[pick]
-
         pickRandom()
 
         guesses = 3
@@ -258,16 +299,40 @@ function next() {
 }
 
 function showPreviousQuestions() {
-    list = document.getElementById('previousQuestions')
+    let scoreTeller = document.getElementById("score")
+    let perfectTeller = document.getElementById("highest")
+    let totalTeller = document.getElementById("total")
+
+    let list = document.getElementById('previousQuestions')
     list.innerHTML = ''
 
-    console.log(Object.keys(completed))
+    let completed = JSON.parse(localStorage.getItem("completed"))
 
-    if (Object.keys(completed) > 0) {
-        completed.forEach(function (item) {
-            var option = document.createElement('option');
-            option.value = item;
-            list.appendChild(option);
-        });
+    if (typeof completed !== 'undefined' && completed !== null) {
+        if (Object.keys(completed).length > 0) {
+            let completedQuestions = []
+            let finalString = "<ul>"
+            let score = 0
+
+            Object.keys(completed).forEach(function (key) {
+                completedQuestions.push("Question: " + completed[key]["story"] + "</br> Answer: " + completed[key]["word"] + "</br> Number of guesses left: " + completed[key]["numGuesses"])
+                score += completed[key]["numGuesses"]
+            });
+
+            completedQuestions.forEach(function (item) {
+                finalString += '<li>' + item + '</li>';
+            });
+
+            finalString += '</ul>';
+            list.innerHTML = finalString;
+
+            scoreTeller.innerHTML = "Current Score: " + score + " / " + (3 * Object.keys(completed).length)
+            perfectTeller.innerHTML = "Score if you perfectly answer all questions: " + (totalQuestions * 3)
+            totalTeller.innerHTML = "Total Questions: " + totalQuestions
+        }
     }
+    else {
+        scoreTeller.innerHTML = "No questions answered yet!"
+    }
+
 }
