@@ -53,3 +53,7 @@ button {
     text-align: center;
     margin-top: 2%;
 }
+
+li {
+    padding: 10px;
+}
