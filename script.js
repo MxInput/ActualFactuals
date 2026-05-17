@@ -148,12 +148,18 @@ var context = {
     }
 };
 
-var completed = {}
 var guesses = 3
 
 var guessedAlready = false
 
-document.getElementById('attempts').innerHTML = guesses + ' guesses left'
+function begin() {
+    start()
+    pickRandom()
+}
+
+function start() {
+    document.getElementById('attempts').innerHTML = guesses + ' guesses left'
+}
 
 function pickRandom() {
     let contextLeft = Object.keys(context).length
@@ -251,6 +257,17 @@ function next() {
     }
 }
 
+function showPreviousQuestions() {
+    list = document.getElementById('previousQuestions')
+    list.innerHTML = ''
 
-pickRandom()
+    console.log(Object.keys(completed))
 
+    if (Object.keys(completed) > 0) {
+        completed.forEach(function (item) {
+            var option = document.createElement('option');
+            option.value = item;
+            list.appendChild(option);
+        });
+    }
+}
