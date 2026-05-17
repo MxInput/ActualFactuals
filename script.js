@@ -324,13 +324,23 @@ var guesses = 3
 
 var guessedAlready = false
 
+var current = ""
+
 var totalQuestions = Object.keys(context).length
 
 function begin() {
     initializeContext()
     start()
     if (Object.keys(context).length != 0) {
-        pickRandom()
+        if (current == "") {
+            pickRandom()
+        }
+        else {
+            guesses = localStorage.getItem("guesses")
+            findQuestion()
+
+            wrongGuess()
+        }
     }
     else {
         guessedAll()
@@ -362,6 +372,7 @@ function start() {
 function initializeContext() {
     let foundContext = JSON.parse(localStorage.getItem("context"))
     let foundCompleted = JSON.parse(localStorage.getItem("completed"))
+    let foundCurrent = localStorage.getItem("current")
 
     if (typeof foundContext !== 'undefined' && foundContext !== null) {
         context = foundContext
@@ -369,6 +380,10 @@ function initializeContext() {
 
     if (typeof foundCompleted !== 'undefined' && foundCompleted !== null) {
         completed = foundCompleted
+    }
+
+    if (typeof foundCurrent !== 'undefined' && foundCurrent !== null) {
+        current = foundCurrent
     }
 }
 
@@ -379,6 +394,18 @@ function pickRandom() {
     let context_keys = Object.keys(context)
     pick = context_keys[i]
     actual_pick = context[pick]
+
+    document.getElementById('story').innerHTML = actual_pick['story']
+    document.getElementById('site').innerHTML = actual_pick['site']
+
+    current = pick
+    localStorage.setItem("current", current)
+
+    localStorage.setItem("guesses", guesses)
+}
+
+function findQuestion() {
+    actual_pick = context[current]
 
     document.getElementById('story').innerHTML = actual_pick['story']
     document.getElementById('site').innerHTML = actual_pick['site']
@@ -413,21 +440,22 @@ function guess() {
             let dictString = JSON.stringify(completed)
             localStorage.setItem("completed", dictString)
 
-            delete context[pick]
+            delete context[current]
 
             let questionString = JSON.stringify(context)
             localStorage.setItem("context", questionString)
+
+            current = ""
+            localStorage.setItem("current", current)
 
             showNextBtn()
         }
         else {
             guesses -= 1
-            document.getElementById('response').innerHTML = "Wrong! Try again.";
-            document.getElementById('response').style.color = "E81C31";
-            document.getElementById('response').style.fontWeight = "bold";
 
-            document.getElementById('attempts').innerHTML = guesses + ' guesses left'
+            wrongGuess()
 
+            localStorage.setItem("guesses", guesses)
         }
 
         if (guesses == 0) {
@@ -446,21 +474,52 @@ function guess() {
             let dictString = JSON.stringify(completed)
             localStorage.setItem("completed", dictString)
 
-            delete context[pick]
+            delete context[current]
 
             let questionString = JSON.stringify(context)
             localStorage.setItem("context", questionString)
+
+            current = ""
+            localStorage.setItem("current", current)
 
             showNextBtn()
         }
     }
 }
 
+function wrongGuess() {
+    if (guesses == 2 || guesses == 1) {
+        let hint1Teller = document.getElementById('hint1')
+        hint1Teller.style.display = "inline"
+        hint1Teller.innerHTML = "Hint 1: " + actual_pick['hint1']
+    }
+    if (guesses == 1) {
+        let hint2Teller = document.getElementById('hint2')
+        hint2Teller.style.display = "inline"
+        hint2Teller.innerHTML = "Hint 2: " + actual_pick['hint2']
+    }
+
+    if (guesses < 3) {
+        document.getElementById('response').innerHTML = "Wrong! Try again.";
+        document.getElementById('response').style.color = "E81C31";
+        document.getElementById('response').style.fontWeight = "bold";
+    }
+
+    document.getElementById('attempts').innerHTML = guesses + ' guesses left'
+}
+
+
 function showNextBtn() {
     document.getElementById('next').style.display = "inline";
 }
 
 function next() {
+    let hint1Teller = document.getElementById('hint1')
+    hint1Teller.style.display = "none"
+
+    let hint2Teller = document.getElementById('hint2')
+    hint2Teller.style.display = "none"
+
     if (Object.keys(context).length != 0) {
         guessedAlready = false
 
@@ -472,6 +531,8 @@ function next() {
         pickRandom()
 
         guesses = 3
+
+        localStorage.setItem("guesses", guesses)
 
         document.getElementById('attempts').innerHTML = guesses + ' guesses left'
     }
@@ -498,7 +559,7 @@ function showPreviousQuestions() {
 
             Object.keys(completed).forEach(function (key) {
                 completedQuestions.push("Question: " + completed[key]["story"] + "</br> Answer: " + completed[key]["word"] + "</br> Number of guesses left: " + completed[key]["numGuesses"])
-                score += completed[key]["numGuesses"]
+                score += parseInt(completed[key]["numGuesses"])
             });
 
             completedQuestions.forEach(function (item) {
